@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Supported-Rate Capacity — Keenan Benjamin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --ink: #1a2332;
+    --ink-soft: #3d4657;
+    --paper: #fafaf7;
+    --paper-warm: #f3f1ea;
+    --ember: #c8622d;
+    --ember-deep: #a54e20;
+    --line: #d8d5cc;
+    --line-soft: #e6e3da;
+    --muted: #6b7280;
+    --field-bg: #ffffff;
+    --serif: 'Newsreader', Georgia, serif;
+    --sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 600px; margin: 0 auto; padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 5vw, 2rem) 4rem; }
+  .masthead { border-bottom: 1px solid var(--line); padding-bottom: 1.25rem; margin-bottom: 2.75rem; }
+  .practice-name { font-size: 0.9rem; font-weight: 500; letter-spacing: 0.01em; color: var(--ink-soft); margin: 0; }
+  .practice-role { font-size: 0.82rem; color: var(--muted); margin: 0.15rem 0 0; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 1.5rem; }
+  .lede { font-size: 1.05rem; color: var(--ink-soft); margin: 0 0 1.1rem; max-width: 54ch; }
+  .rule { border: 0; border-top: 1px solid var(--line-soft); margin: 2.5rem 0; }
+  .field { margin-bottom: 1.8rem; }
+  label { display: block; font-weight: 500; font-size: 1.02rem; color: var(--ink); margin-bottom: 0.45rem; }
+  .req { color: var(--ember); font-weight: 500; }
+  .help { display: block; font-size: 0.9rem; color: var(--muted); margin-bottom: 0.65rem; font-weight: 400; line-height: 1.5; }
+  input[type="text"], input[type="email"], select, textarea {
+    width: 100%; font-family: var(--sans); font-size: 1rem; color: var(--ink);
+    background: var(--field-bg); border: 1px solid var(--line); border-radius: 3px;
+    padding: 0.7rem 0.85rem; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea { resize: vertical; min-height: 5rem; line-height: 1.55; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px rgba(200, 98, 45, 0.12); }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.9rem center; padding-right: 2.25rem; cursor: pointer;
+  }
+  .actions { margin-top: 2.25rem; }
+  button[type="submit"] { font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--paper); background: var(--ink); border: none; border-radius: 3px; padding: 0.85rem 1.8rem; cursor: pointer; transition: background 0.18s ease; }
+  button[type="submit"]:hover { background: #0f1620; }
+  button[type="submit"]:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+  .submit-note { font-size: 0.88rem; color: var(--muted); margin-top: 1rem; max-width: 48ch; }
+  .confirmation { display: none; }
+  .confirmation.show { display: block; }
+  .confirmation h2 { font-family: var(--serif); font-weight: 400; font-size: 1.8rem; line-height: 1.15; margin: 0 0 1.25rem; }
+  .confirmation p { font-size: 1.05rem; color: var(--ink-soft); margin: 0 0 1rem; max-width: 52ch; }
+  .form-region.hidden { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .confirmation.show { animation: rise 0.5s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --ink: #ece9e1; --ink-soft: #c3bfb4; --paper: #14181f; --paper-warm: #1c222b; --line: #333b47; --line-soft: #262d37; --muted: #8b93a1; --field-bg: #1a1f27; }
+  }
+  :root[data-theme="dark"] { --ink: #ece9e1; --ink-soft: #c3bfb4; --paper: #14181f; --paper-warm: #1c222b; --line: #333b47; --line-soft: #262d37; --muted: #8b93a1; --field-bg: #1a1f27; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <p class="practice-name">Keenan Benjamin</p>
+    <p class="practice-role">Private Advisory Practice</p>
+  </div>
+
+  <div class="form-region" id="formRegion">
+    <h1>Ask about supported-rate capacity</h1>
+    <p class="lede">Limited supported-rate capacity may be available when the work is a strong fit and the standard investment would create genuine financial strain.</p>
+    <p class="lede">Tell me a little about your situation. I will let you know whether capacity is available and the fixed supported investment for the engagement you are considering.</p>
+
+    <hr class="rule">
+
+    <form id="supportForm" action="https://formspree.io/f/mljdbwrv" method="POST" novalidate>
+      <div class="field">
+        <label for="name">Name <span class="req">*</span></label>
+        <input type="text" id="name" name="name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="engagement">Which engagement are you considering? <span class="req">*</span></label>
+        <select id="engagement" name="engagement" required>
+          <option value="" disabled selected></option>
+          <option>Full-Picture Review</option>
+          <option>Precision Intensive</option>
+          <option>Fire Navigation</option>
+          <option>Ongoing Advisory</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="context">Briefly, what makes the standard investment unworkable right now? <span class="req">*</span></label>
+        <textarea id="context" name="context" required></textarea>
+      </div>
+      <div class="field">
+        <label for="workable">Would the published supported investment for that engagement be workable? <span class="req">*</span></label>
+        <select id="workable" name="workable" required>
+          <option value="" disabled selected></option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>I need to understand the payment schedule</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button type="submit">Send inquiry</button>
+        <p class="submit-note">Availability is considered separately for each engagement or renewal.</p>
+      </div>
+    </form>
+  </div>
+
+  <div class="confirmation" id="confirmation">
+    <h2>Thank you for reaching out.</h2>
+    <p>I will review your inquiry personally and let you know whether supported capacity is available, along with the fixed supported investment for the engagement you named. If you have questions in the meantime, reply to the email you receive.</p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('supportForm');
+    var formRegion = document.getElementById('formRegion');
+    var confirmation = document.getElementById('confirmation');
+    var button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      button.disabled = true;
+      button.textContent = 'Sending…';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(function (response) {
+        if (response.ok) {
+          formRegion.classList.add('hidden');
+          confirmation.classList.add('show');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          response.json().then(function (data) {
+            var msg = (data && data.errors && data.errors.length)
+              ? data.errors.map(function (er) { return er.message; }).join(', ')
+              : 'Something went wrong. Please try again, or email keenan@consciousmotivation.com directly.';
+            showError(msg);
+          }).catch(function () {
+            showError('Something went wrong. Please try again, or email keenan@consciousmotivation.com directly.');
+          });
+        }
+      })
+      .catch(function () {
+        showError('Something went wrong. Please check your connection and try again, or email keenan@consciousmotivation.com directly.');
+      });
+    });
+
+    function showError(message) {
+      button.disabled = false;
+      button.textContent = 'Send inquiry';
+      var existing = document.getElementById('formError');
+      if (existing) existing.remove();
+      var err = document.createElement('p');
+      err.id = 'formError';
+      err.setAttribute('role', 'alert');
+      err.style.color = '#a54e20';
+      err.style.fontSize = '0.92rem';
+      err.style.marginTop = '0.85rem';
+      err.textContent = message;
+      button.parentNode.appendChild(err);
+    }
+  })();
+</script>
+</body>
+</html>

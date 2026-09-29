@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Start Fire Navigation — Keenan Benjamin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --ink: #1a2332;
+    --ink-soft: #3d4657;
+    --paper: #fafaf7;
+    --paper-warm: #f3f1ea;
+    --ember: #c8622d;
+    --ember-deep: #a54e20;
+    --line: #d8d5cc;
+    --line-soft: #e6e3da;
+    --muted: #6b7280;
+    --field-bg: #ffffff;
+
+    --serif: 'Newsreader', Georgia, serif;
+    --sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 5vw, 2rem) 4rem;
+  }
+
+  /* Masthead */
+  .masthead {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1.25rem;
+    margin-bottom: 2.75rem;
+  }
+  .practice-name {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .practice-role {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0.15rem 0 0;
+  }
+
+  /* Opening */
+  .eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ember-deep);
+    margin: 0 0 0.75rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 6vw, 2.9rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.5rem;
+  }
+  .lede {
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    margin: 0 0 1.1rem;
+    max-width: 52ch;
+  }
+  .lede:last-of-type { margin-bottom: 0; }
+  .no-sales {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink);
+    font-size: 1.1rem;
+    margin-top: 1.4rem;
+  }
+
+  .rule {
+    border: 0;
+    border-top: 1px solid var(--line-soft);
+    margin: 2.75rem 0;
+  }
+
+  /* Form */
+  .field { margin-bottom: 1.9rem; }
+  .field:last-of-type { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-weight: 500;
+    font-size: 1.02rem;
+    color: var(--ink);
+    margin-bottom: 0.45rem;
+  }
+  .req { color: var(--ember); font-weight: 500; }
+  .help {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 0.65rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--field-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.7rem 0.85rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 5.5rem;
+    line-height: 1.55;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--ember);
+    box-shadow: 0 0 0 3px rgba(200, 98, 45, 0.12);
+  }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.25rem;
+    cursor: pointer;
+  }
+
+  /* Acknowledgment checkbox */
+  .ack {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 1rem 1.1rem;
+  }
+  .ack input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.15rem;
+    accent-color: var(--ember);
+    cursor: pointer;
+  }
+  .ack label {
+    margin: 0;
+    font-weight: 400;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  /* Submit */
+  .actions { margin-top: 2.5rem; }
+  button[type="submit"] {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--paper);
+    background: var(--ink);
+    border: none;
+    border-radius: 3px;
+    padding: 0.85rem 1.8rem;
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+  button[type="submit"]:hover { background: #0f1620; }
+  button[type="submit"]:focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 2px;
+  }
+  .submit-note {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    max-width: 48ch;
+  }
+
+  /* Confirmation state */
+  .confirmation {
+    display: none;
+    font-family: var(--serif);
+  }
+  .confirmation.show { display: block; }
+  .confirmation h2 {
+    font-weight: 400;
+    font-size: 1.9rem;
+    line-height: 1.15;
+    margin: 0 0 1.25rem;
+  }
+  .confirmation p {
+    font-family: var(--sans);
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    margin: 0 0 1rem;
+    max-width: 52ch;
+  }
+
+  .form-region.hidden { display: none; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .confirmation.show { animation: rise 0.5s ease both; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #ece9e1;
+      --ink-soft: #c3bfb4;
+      --paper: #14181f;
+      --paper-warm: #1c222b;
+      --line: #333b47;
+      --line-soft: #262d37;
+      --muted: #8b93a1;
+      --field-bg: #1a1f27;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #ece9e1;
+    --ink-soft: #c3bfb4;
+    --paper: #14181f;
+    --paper-warm: #1c222b;
+    --line: #333b47;
+    --line-soft: #262d37;
+    --muted: #8b93a1;
+    --field-bg: #1a1f27;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <p class="practice-name">Keenan Benjamin</p>
+    <p class="practice-role">Private Advisory Practice</p>
+  </div>
+
+  <div class="form-region" id="formRegion">
+    <p class="eyebrow">Fire Navigation</p>
+    <h1>Start Fire Navigation</h1>
+    <p class="lede">Fire Navigation is a 90-day private advisory engagement for a significant identity transition, or a season with several linked decisions.</p>
+    <p class="lede">Complete this short form and I will review it within 48 hours. If the work is within scope and I have capacity, I will send the agreement and payment path directly. If something needs clarification first, I will suggest a short conversation.</p>
+    <p class="no-sales">You do not need to complete an Alignment Call when the fit is already clear.</p>
+
+    <hr class="rule">
+
+    <form id="fireForm" action="https://formspree.io/f/xrpbqazk" method="POST" novalidate>
+      <div class="field">
+        <label for="name">Full name <span class="req">*</span></label>
+        <input type="text" id="name" name="name" required autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone number <span class="req">*</span></label>
+        <span class="help">Best number to reach you.</span>
+        <input type="tel" id="phone" name="phone" required autocomplete="tel">
+      </div>
+
+      <div class="field">
+        <label for="changed">What has changed in your life that brings you here? <span class="req">*</span></label>
+        <textarea id="changed" name="changed" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="important">Of everything you are navigating, what feels most important now? <span class="req">*</span></label>
+        <textarea id="important" name="important" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="scope">Why does a 90-day engagement feel like the appropriate scope? <span class="req">*</span></label>
+        <textarea id="scope" name="scope" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="timing">When would you like to begin? <span class="req">*</span></label>
+        <select id="timing" name="timing" required>
+          <option value="" disabled selected></option>
+          <option>Within two weeks</option>
+          <option>Within a month</option>
+          <option>Within two months</option>
+          <option>I am flexible</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="professionals">Which other professionals are currently involved, if any? <span class="req">*</span></label>
+        <span class="help">Therapist, attorney, financial advisor, physician, or others. "None" is a complete answer.</span>
+        <input type="text" id="professionals" name="professionals" required>
+      </div>
+
+      <div class="field">
+        <div class="ack">
+          <input type="checkbox" id="invest" name="invest" required>
+          <label for="invest">I understand that Fire Navigation is $7,500 paid in full, or three payments of $2,500, and that supported-rate capacity may be requested separately before acceptance.</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="ack">
+          <input type="checkbox" id="scopeack" name="scopeack" required>
+          <label for="scopeack">I understand that this practice does not provide legal, financial, tax, medical, mental health, or emergency services.</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Send for review</button>
+        <p class="submit-note">I review every submission personally and respond within 48 hours.</p>
+      </div>
+    </form>
+  </div>
+
+  <div class="confirmation" id="confirmation">
+    <h2>Thank you. I will review what you shared within 48 hours.</h2>
+    <p>If the work is within scope and I have capacity, I will send the engagement agreement and next steps directly. If something needs clarification, I will suggest a short conversation. If another kind of support should lead, I will tell you that plainly.</p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('fireForm');
+    var formRegion = document.getElementById('formRegion');
+    var confirmation = document.getElementById('confirmation');
+    var button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      button.disabled = true;
+      button.textContent = 'Sending…';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(function (response) {
+        if (response.ok) {
+          formRegion.classList.add('hidden');
+          confirmation.classList.add('show');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          response.json().then(function (data) {
+            var msg = (data && data.errors && data.errors.length)
+              ? data.errors.map(function (er) { return er.message; }).join(', ')
+              : 'Something went wrong. Please try again, or email keenan@consciousmotivation.com directly.';
+            showError(msg);
+          }).catch(function () {
+            showError('Something went wrong. Please try again, or email keenan@consciousmotivation.com directly.');
+          });
+        }
+      })
+      .catch(function () {
+        showError('Something went wrong. Please check your connection and try again, or email keenan@consciousmotivation.com directly.');
+      });
+    });
+
+    function showError(message) {
+      button.disabled = false;
+      button.textContent = 'Send for review';
+      var existing = document.getElementById('formError');
+      if (existing) existing.remove();
+      var err = document.createElement('p');
+      err.id = 'formError';
+      err.setAttribute('role', 'alert');
+      err.style.color = '#a54e20';
+      err.style.fontSize = '0.92rem';
+      err.style.marginTop = '0.85rem';
+      err.textContent = message;
+      button.parentNode.appendChild(err);
+    }
+  })();
+</script>
+</body>
+</html>
