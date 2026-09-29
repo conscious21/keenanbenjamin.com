@@ -56,7 +56,7 @@
   header.nav.on-light .nav-links a.nav-cta { color: #fff; }
   .nav-links a.nav-cta:hover { background: var(--ember-deep); color: #fff; }
   .nav-links .desk-only { display: none; }
-  @media (min-width: 680px) { .nav-links .desk-only { display: inline; } } @media (max-width: 679px) { .hero { min-height: 0; justify-content: flex-start; overflow: visible; padding: 3rem 1.5rem 4rem; } .hero-emblem { margin-bottom: 2rem; } .hero h1 { font-size: clamp(2.2rem, 10vw, 2.9rem); } }
+  @media (min-width: 680px) { .nav-links .desk-only { display: inline; } } @media (max-width: 679px) { .hero { min-height: 0; justify-content: flex-start; overflow: visible; padding: 3rem 1.5rem 4rem; } .hero-emblem { margin-bottom: 2rem; } .hero h1 { font-size: clamp(2.2rem, 10vw, 2.9rem); } .nav-links a.nav-cta { white-space: nowrap; padding: 0.5rem 0.9rem; } }
 
   /* Focus visibility on ALL links */
   a:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; border-radius: 2px; }
@@ -162,7 +162,7 @@
   [data-scroll] { opacity: 0; transform: translateY(14px); transition: opacity 0.9s ease, transform 0.9s ease; }
   [data-scroll].visible { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) { [data-scroll] { opacity: 1 !important; transform: none !important; } .hero-emblem, .hero-timestamp, .hero h1, .hero .subhead, .hero .recognition, .hero-choices { opacity: 1 !important; animation: none !important; } }
-</style>
+@media (max-width: 379px) { .nav-brand .label { display: none; } }</style>
 </head>
 <body>
 <canvas id="ember-canvas" aria-hidden="true"></canvas>
@@ -372,7 +372,7 @@
     var nav = document.getElementById('siteNav');
     var darkBands = Array.prototype.slice.call(document.querySelectorAll('[data-band="dark"]'));
     function anyDarkVisible(){ for (var i=0;i<darkBands.length;i++){ var r=darkBands[i].getBoundingClientRect(); if (r.bottom>0 && r.top<window.innerHeight) return true; } return false; }
-    function overDarkAtNav(){ var probeY = 70; for (var i=0;i<darkBands.length;i++){ var r=darkBands[i].getBoundingClientRect(); if (r.top <= probeY && r.bottom > probeY) return true; } return false; }
+    function overDarkAtNav(){ var probeY = nav.offsetHeight + 2; for (var i=0;i<darkBands.length;i++){ var r=darkBands[i].getBoundingClientRect(); if (r.top <= probeY && r.bottom > probeY) return true; } return false; }
     function onScroll(){
       var dark = anyDarkVisible();
       if (dark !== lit) { lit = dark; canvas.classList.toggle('lit', dark); if (!dark) ctx.clearRect(0,0,canvas.width,canvas.height); }
