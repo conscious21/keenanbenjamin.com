@@ -37,7 +37,7 @@
   .phoenix-foot { width: 40px; aspect-ratio: 400 / 460; margin: 0 auto 1.5rem; filter: drop-shadow(0 0 14px rgba(200,86,42,0.35)); opacity: 0.85; }
 
   /* Ember canvas — truly off unless a dark band is visible */
-  #ember-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 0.6s ease; }
+  #ember-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; opacity: 0; transition: opacity 0.6s ease; }
   #ember-canvas.lit { opacity: 1; }
 
   /* ---------- NAV ---------- */
@@ -364,11 +364,9 @@
     Ember.prototype.draw = function(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle='hsla('+(14+this.hue)+',82%,55%,'+this.opacity+')'; ctx.fill(); };
     var particles = []; var count = isMobile ? 12 : 22;
     for (var i=0;i<count;i++) particles.push(new Ember());
-    var lit = false;
-    function animate(){ if (lit) { ctx.clearRect(0,0,canvas.width,canvas.height); for(var i=0;i<particles.length;i++){ particles[i].update(); particles[i].draw(); } } requestAnimationFrame(animate); }
+    var nav = document.getElementById('siteNav'); var darkBands = Array.prototype.slice.call(document.querySelectorAll('[data-band="dark"]')); var lit = false;
+    var darkRects = []; function refreshRects(){ darkRects = darkBands.map(function(b){ return b.getBoundingClientRect(); }); } function inDark(p){ for (var i=0;i<darkRects.length;i++){ var r=darkRects[i]; if (p.y >= r.top && p.y <= r.bottom) return true; } return false; } function animate(){ if (lit) { ctx.clearRect(0,0,canvas.width,canvas.height); refreshRects(); for(var i=0;i<particles.length;i++){ particles[i].update(); if (inDark(particles[i])) particles[i].draw(); } } requestAnimationFrame(animate); }
     animate();
-    var nav = document.getElementById('siteNav');
-    var darkBands = Array.prototype.slice.call(document.querySelectorAll('[data-band="dark"]'));
     function anyDarkVisible(){ for (var i=0;i<darkBands.length;i++){ var r=darkBands[i].getBoundingClientRect(); if (r.bottom>0 && r.top<window.innerHeight) return true; } return false; }
     function overDarkAtNav(){ var probeY = nav.offsetHeight + 2; for (var i=0;i<darkBands.length;i++){ var r=darkBands[i].getBoundingClientRect(); if (r.top <= probeY && r.bottom > probeY) return true; } return false; }
     function onScroll(){
